@@ -1,0 +1,127 @@
+#pragma once
+#include <cmath>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+
+
+
+// ---------------------------
+// -- Algoritmul Fibonacci ---
+// ---------------------------
+
+
+
+class fibonacciInterface {
+protected:
+	//1. Metoda Recursiva
+	virtual long fibonacciRecursive(int n) = 0;
+
+	//2. Metoda Iterativa
+	virtual long* fibonacciIterative(int n) = 0;
+
+	//3. Prin formula lui Binet
+	virtual long fibonacciBinet(int n) = 0;
+
+	//4. Metoda Memorizatie
+	virtual long fibonacciMemo(int n, vector<long>& memo) = 0;
+};
+
+
+
+class FibonacciAlgorithm : fibonacciInterface{
+public:
+
+	//1. Metoda Recursiva - > O(2^n)
+
+	long fibonacciRecursive(int n) {
+		if (n <= 1) {
+			return n;
+		}
+		return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+	}
+
+
+	//2. Metoda Iterativa - > O(n)
+
+	long* fibonacciIterative(int n) {
+		long* numArray = new long[n + 2];
+		numArray[0] = 0;
+		numArray[1] = 1;
+
+		for (int i = 2; i <= n; i++) { // 
+			numArray[i] = numArray[i - 1] + numArray[i - 2];
+		};
+
+		return numArray;
+	}
+
+
+	// 3. Formula lui Binet -> O(1)
+
+	long fibonacciBinet(int n) {
+		double sqrt5 = std::sqrt(5);
+		double goldenRatio = (1 + sqrt5) / 2;
+		double conjGoldenRatio = (1 - sqrt5) / 2;
+
+		return std::round((std::pow(goldenRatio, n) - std::pow(conjGoldenRatio, n)) / sqrt5);
+	}
+
+
+	// 4. Metoda Memorizatie -> O(n)
+
+	long fibonacciMemo(int n, vector<long>& memo) {
+		if (n <= 1) {
+			return n;
+		}
+
+		if (memo[n] != -1) {
+			return memo[n];
+		}
+
+		memo[n] = fibonacciMemo(n - 1, memo) + fibonacciMemo(n - 2, memo);
+
+		return memo[n];
+	}
+
+
+	// 5. Inmultire prin matrice - O(log(n))
+
+	const int MOD = 1e9 + 7;
+
+	struct Matrix {
+		long long m[2][2];
+	};
+
+	Matrix multiply(Matrix a, Matrix b) {
+		Matrix result;
+		result.m[0][0] = (a.m[0][0] * b.m[0][0] + a.m[0][1] * b.m[1][0]) % MOD;
+		result.m[0][1] = (a.m[0][0] * b.m[0][1] + a.m[0][1] * b.m[1][1]) % MOD;
+		result.m[1][0] = (a.m[1][0] * b.m[0][0] + a.m[1][1] * b.m[1][0]) % MOD;
+		result.m[1][1] = (a.m[1][0] * b.m[0][1] + a.m[1][1] * b.m[1][1]) % MOD;
+		return result;
+	}
+
+	Matrix power(Matrix base, int n) {
+		Matrix result = { {{1, 0}, {0, 1}} }; 
+		while (n > 0) {
+			if (n % 2 == 1) {
+				result = multiply(result, base);
+			}
+			base = multiply(base, base);
+			n /= 2;
+		}
+		return result;
+	}
+
+	long long fibonacciMatrix(int n) {
+		if (n == 0) return 0;
+		Matrix base = { {{1, 1}, {1, 0}} };
+		Matrix result = power(base, n - 1);
+		return result.m[0][0];
+	}
+};
+
