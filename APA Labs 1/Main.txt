@@ -31,7 +31,7 @@ int main(void) {
     // -- Analiza empirica pentru [Metoda Recursiva] --
     //_______________________________________________
 
-    /*
+    
     for (int i = 0; i <= n; i++) {
         auto start = std::chrono::high_resolution_clock::now();
 
@@ -48,7 +48,7 @@ int main(void) {
     cout << " Analiza empirica pentru [Metoda Recursiva], n = " <<n<< endl;
     cout << "------------------------------------------------------\n" << endl;
     objectFibonacci->printArrays(results, n + 1);
-    */
+    
     
 
     //-----------------------------------------------
