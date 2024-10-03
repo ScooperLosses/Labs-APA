@@ -13,50 +13,70 @@ using std::cin;
 using std::vector;
 
 
-int main(void){
-
+int main(void) {
     FibonacciAlgorithm* objectFibonacci = new FibonacciAlgorithm();
     int n;
-
+    
     cout << "Introduceti valoarea pentu n: \n" << endl;
     cin >> n;
     cout << "\n" << endl;
 
+    long long** results = new long long* [2]; 
+    results[0] = new long long[n + 1]; 
+    results[1] = new long long[n + 1]; 
+ 
 
 
     //-----------------------------------------------
     // -- Analiza empirica pentru [Metoda Recursiva] --
     //_______________________________________________
 
-    auto startRecursiv = std::chrono::high_resolution_clock::now();
+    /*
+    for (int i = 0; i <= n; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-    cout << objectFibonacci->fibonacciRecursive(n) << endl;
+        results[0][i] = objectFibonacci->fibonacciRecursive(i);
 
-    auto endRecursiv = std::chrono::high_resolution_clock::now();
+        auto end = std::chrono::high_resolution_clock::now();
 
-    auto durationRecursiv = duration_cast<microseconds>(endRecursiv - startRecursiv);
+        auto duration = duration_cast<microseconds>(end - start);
 
-    cout << "\n Algoritmul [Recursiv] s-a executat in: " << durationRecursiv.count() <<" microsecunde. \n" << endl;
-    cout << "---------------------------------------------------------------------------------------------------" << endl;
+        results[1][i] = duration.count();
+    }
 
-
+    cout << "\n----------------------------------------------------" << endl;
+    cout << " Analiza empirica pentru [Metoda Recursiva], n = " <<n<< endl;
+    cout << "------------------------------------------------------\n" << endl;
+    objectFibonacci->printArrays(results, n + 1);
+    */
+    
 
     //-----------------------------------------------
     // -- Analiza empirica pentru [Metoda Iterativa] --
     //_______________________________________________
 
-    auto startIterative = std::chrono::high_resolution_clock::now();
-    long* iterativeArray = objectFibonacci->fibonacciIterative(n);
-    auto endIterative = std::chrono::high_resolution_clock::now();
+    long long* iterativeArray = new long long[n + 1];
 
-    cout << iterativeArray[n] << endl;
+    for (int i = 0; i <= n; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-    auto durationIterative = duration_cast<microseconds>(endIterative - startIterative);
+        iterativeArray = objectFibonacci->fibonacciIterative(i);
 
-    cout << "\n Algoritmul [Iterativ] s-a executat in: " << durationIterative.count() << " microsecunde. \n" << endl;
-    cout << "---------------------------------------------------------------------------------------------------" << endl;
+        for (int i = 0; i < n; i++) {
+            results[0][i] = iterativeArray[i];
+        }
 
-    delete[] iterativeArray;
+        auto end = std::chrono::high_resolution_clock::now();
+
+        auto duration = duration_cast<microseconds>(end - start);
+
+        results[1][i] = duration.count();
+    }
+
+    cout << "\n------------------------------------------------------" << endl;
+    cout << " Analiza empirica pentru [Metoda Iterativa], n = " << n << endl;
+    cout << "--------------------------------------------------------\n" << endl;
+    objectFibonacci->printArrays(results, n);
 
 
 
@@ -64,54 +84,73 @@ int main(void){
     // -- Analiza empirica pentru [Fibonacci-Binet] --
     //_______________________________________________
 
-    auto startBinet = std::chrono::high_resolution_clock::now();
-    double resBinet = objectFibonacci->fibonacciBinet(n);
-    auto endBinet = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i <= n; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-    cout << resBinet << endl;
+        results[0][i] = objectFibonacci->fibonacciBinet(i);
 
-    auto durationBinet = duration_cast<microseconds>(endBinet - startBinet);
+        auto end = std::chrono::high_resolution_clock::now();
 
-    cout << "\nAlgoritmul [Fibonacci-Binet] s-a executat in: " << durationBinet.count() <<" microsecunde. \n" << endl;
-    cout << "---------------------------------------------------------------------------------------------------" << endl;
+        auto duration = duration_cast<microseconds>(end - start);
+
+        results[1][i] = duration.count();
+    }
+
+    cout << "\n---------------------------------------------------" << endl;
+    cout << " Analiza empirica pentru [Formula Binet], n = " <<n<< endl;
+    cout << "-----------------------------------------------------\n" << endl;
+    objectFibonacci->printArrays(results, n);
 
 
-
+    
     //-----------------------------------------------
-    //   -- Analiza empirica pentru [Memorizatie] --
+    //   -- Analiza empirica pentru [Memoizatie] --
     //_______________________________________________
 
-    vector<long> memo(n + 1, -1);
+    vector<long long> memo(n + 1, -1);
 
-    auto startMemo = std::chrono::high_resolution_clock::now();
-    long resultMemo = objectFibonacci->fibonacciMemo(n, memo);
-    auto endMemo = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i <= n; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-    auto durationMemo = duration_cast<microseconds>(endMemo - startMemo);
+        results[0][i] = objectFibonacci->fibonacciMemo(i, memo);
 
-    cout << resultMemo << endl;
+        auto end = std::chrono::high_resolution_clock::now();
 
-    cout << "\nAlgoritmul [Memoizatie] s-a executat in: " << durationMemo.count() << " microsecunde. \n" << endl;
-    cout << "---------------------------------------------------------------------------------------------------" << endl;
+        auto duration = duration_cast<microseconds>(end - start);
+
+        results[1][i] = duration.count();
+    }
+
+    cout << "\n-------------------------------------------------------" << endl;
+    cout << " Analiza empirica pentru [Metoda Memoizatiei], n = " << n << endl;
+    cout << "---------------------------------------------------------\n" << endl;
+    objectFibonacci->printArrays(results, n);
 
 
+  
     //-------------------------------------------------------------
-   // -- Analiza empirica pentru [Metoda Inmultire prin Matrice] --
-   //______________________________________________________________
+    // -- Analiza empirica pentru [Metoda Inmultirei in Matrice] --
+    //_____________________________________________________________
 
-    auto startMatrix = std::chrono::high_resolution_clock::now();
-    long resultMatrix = objectFibonacci->fibonacciMatrix(n);
-    auto endMatrix = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i <= n; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
 
-    auto durationMatrix = duration_cast<microseconds>(endMatrix - startMatrix);
+        results[0][i] = objectFibonacci->fibonacciMatrix(i);
 
-    cout << resultMatrix << endl;
+        auto end = std::chrono::high_resolution_clock::now();
 
-    cout << "\nAlgoritmul [Inmultire prin Matrice] s-a executat in: " << durationMatrix.count() << " microsecunde. \n" << endl;
-    cout << "---------------------------------------------------------------------------------------------------" << endl;
+        auto duration = duration_cast<microseconds>(end - start);
 
-    delete objectFibonacci;
+        results[1][i] = duration.count();
+    }
 
+    cout << "------------------------------------------------------------------" << endl;
+    cout << " Analiza empirica pentru [Metoda Inmutirei in Matrice], n = " << n << endl;
+    cout << "------------------------------------------------------------------\n" << endl;
+    objectFibonacci->printArrays(results, n);
+    
+
+    delete[] results;
     return 0;
 }
 
